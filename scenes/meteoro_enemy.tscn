@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://blgoyyh2vkjl7"]
+
+[ext_resource type="Script" uid="uid://da2p625wvy3nm" path="res://scripts/entities/MeteoroEnemy.cs" id="1_6i7gi"]
+[ext_resource type="Texture2D" uid="uid://daxoi7ymu5cqh" path="res://textures/Meteors/meteorBrown_big3.png" id="2_ne6t5"]
+[ext_resource type="Script" uid="uid://b62nkck1cai04" path="res://scripts/components/Health.cs" id="3_p56yk"]
+[ext_resource type="Script" uid="uid://cp8d53uwuo0l8" path="res://scripts/components/Movement.cs" id="4_hbwbr"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_p56yk"]
+
+[node name="MeteoroEnemy" type="Area2D"]
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("1_6i7gi")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_ne6t5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_p56yk")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("3_p56yk")
+
+[node name="Movement" type="Node" parent="."]
+script = ExtResource("4_hbwbr")
+
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="OnVisibleOnScreenExited"]

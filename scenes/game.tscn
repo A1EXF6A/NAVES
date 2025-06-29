@@ -1,0 +1,105 @@
+[gd_scene load_steps=18 format=3 uid="uid://b6mubby67bt5w"]
+
+[ext_resource type="Script" uid="uid://bgn7dd3rxnqmv" path="res://scripts/managers/GameManager.cs" id="1_gee14"]
+[ext_resource type="PackedScene" uid="uid://dw63wresywefv" path="res://scenes/player.tscn" id="2_8516w"]
+[ext_resource type="PackedScene" uid="uid://b3plyukpd7eio" path="res://scenes/enemy.tscn" id="4_omci2"]
+[ext_resource type="PackedScene" uid="uid://cf6r2pmsbblle" path="res://scenes/hud.tscn" id="5_68y73"]
+[ext_resource type="PackedScene" uid="uid://cvkh38ne054ji" path="res://scenes/game_over_screen.tscn" id="6_76sx0"]
+[ext_resource type="AudioStream" uid="uid://ct0c2tl11mpjd" path="res://sounds/sfx_laser2.ogg" id="6_xsm6t"]
+[ext_resource type="AudioStream" uid="uid://dpqvhk278w2uu" path="res://sounds/explosion.wav" id="7_4q0nt"]
+[ext_resource type="Texture2D" uid="uid://d25j10j24g0f7" path="res://Backgrounds/purple.png" id="7_x87x8"]
+[ext_resource type="Texture2D" uid="uid://b33gajiqbf18" path="res://textures/Effects/speed.png" id="8_85gox"]
+[ext_resource type="Script" uid="uid://c2p0jw437x5pl" path="res://scripts/managers/ScoreManager.cs" id="9_vtaks"]
+[ext_resource type="Script" uid="uid://bobcba4wnh8hp" path="res://scripts/managers/SpawnManager.cs" id="10_kvpfn"]
+[ext_resource type="Script" uid="uid://b431yf0c6wm76" path="res://scripts/services/AudioService.cs" id="12_dinhu"]
+[ext_resource type="PackedScene" uid="uid://blgoyyh2vkjl7" path="res://scenes/meteoro_enemy.tscn" id="12_trtic"]
+[ext_resource type="PackedScene" uid="uid://c8t20bp2eisu3" path="res://scenes/diver_enemy.tscn" id="13_ca42v"]
+[ext_resource type="AudioStream" uid="uid://b6l2xs634osnj" path="res://sounds/8bit-spaceshooter.mp3" id="13_kvuet"]
+[ext_resource type="Script" uid="uid://dbcyg6xtj1ccx" path="res://scripts/managers/LevelManager.cs" id="15_ir15t"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_61a3k"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(270, 1, 1)
+direction = Vector3(0, -1, 0)
+spread = 2.53
+initial_velocity_min = -1000.0
+initial_velocity_max = -1000.0
+gravity = Vector3(0, 0, 0)
+
+[node name="Game" type="Node2D"]
+position = Vector2(-1, 0)
+script = ExtResource("1_gee14")
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="HUD" parent="UILayer" instance=ExtResource("5_68y73")]
+
+[node name="GameOverScreen" parent="UILayer" instance=ExtResource("6_76sx0")]
+visible = false
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2(0, 960)
+
+[node name="PurpleStars" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+texture_repeat = 2
+texture = ExtResource("7_x87x8")
+centered = false
+region_enabled = true
+region_rect = Rect2(0, 0, 540, 960)
+
+[node name="StarParticleEffect" type="GPUParticles2D" parent="."]
+position = Vector2(270, -50)
+amount = 20
+texture = ExtResource("8_85gox")
+lifetime = 1.25
+preprocess = 5.0
+process_material = SubResource("ParticleProcessMaterial_61a3k")
+
+[node name="Player" parent="." groups=["player"] instance=ExtResource("2_8516w")]
+position = Vector2(268, 853)
+scale = Vector2(0.7, 0.7)
+
+[node name="PlayerSpawnPos" type="Marker2D" parent="."]
+position = Vector2(270, 850)
+
+[node name="LaserContainer" type="Node2D" parent="."]
+
+[node name="EnemyContainer" type="Node2D" parent="."]
+
+[node name="ScoreManager" type="Node" parent="."]
+script = ExtResource("9_vtaks")
+
+[node name="SpawnManager" type="Node" parent="."]
+script = ExtResource("10_kvpfn")
+EnemyScenes = Array[PackedScene]([ExtResource("4_omci2"), ExtResource("12_trtic"), ExtResource("13_ca42v")])
+BaseMinSpawnTime = 2.0
+SpawnReduction = 0.004
+
+[node name="SpawnTimer" type="Timer" parent="SpawnManager"]
+wait_time = 2.0
+autostart = true
+
+[node name="SFX" type="Node" parent="."]
+script = ExtResource("12_dinhu")
+
+[node name="HitSound" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("6_xsm6t")
+
+[node name="ExplodeSound" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("7_4q0nt")
+
+[node name="LaserSound" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("6_xsm6t")
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("13_kvuet")
+volume_db = 0.5
+autoplay = true
+
+[node name="LevelManager" type="Node" parent="."]
+script = ExtResource("15_ir15t")
+SpeedMultiplierPerLevel = 0.1
+SpawnRateMultiplierPerLevel = 0.1

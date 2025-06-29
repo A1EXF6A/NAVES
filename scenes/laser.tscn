@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3 uid="uid://bo61yyyneoobk"]
+
+[ext_resource type="Script" uid="uid://4t7br0r1ongo" path="res://scripts/entities/Laser.cs" id="1_8yyj7"]
+[ext_resource type="Texture2D" uid="uid://dhgj60tvv38g" path="res://textures/Lasers/laserRed01.png" id="1_tfc4b"]
+[ext_resource type="Script" uid="uid://cp8d53uwuo0l8" path="res://scripts/components/Movement.cs" id="3_jjj73"]
+[ext_resource type="Script" uid="uid://b62nkck1cai04" path="res://scripts/components/Health.cs" id="4_412cd"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_x2yff"]
+radius = 4.0
+height = 44.0
+
+[node name="Laser" type="Area2D"]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_8yyj7")
+Damage = 5
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(5.96046e-08, -22)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("1_tfc4b")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -22)
+shape = SubResource("CapsuleShape2D_x2yff")
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+position = Vector2(0, 6)
+scale = Vector2(0.4125, 0.175)
+
+[node name="Movement" type="Node" parent="."]
+script = ExtResource("3_jjj73")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("4_412cd")
+
+[connection signal="area_entered" from="." to="." method="OnAreaEntered"]
+[connection signal="screen_exited" from="VisibleOnScreenEnabler2D" to="." method="OnVisibleOnScreenEnabler"]
